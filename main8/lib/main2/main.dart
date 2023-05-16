@@ -73,24 +73,39 @@ class MyPage extends StatelessWidget {
 
         // note: 상위/하위 값을 추측하고 싶지 않다면 ?
         // note: 최상단에 iconSize 설정
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            return Stack(
-              fit: StackFit.expand,
-              children: [
-                Material(color: Colors.yellowAccent),
-                Positioned(
-                  top: 0,
-                  child: Icon(Icons.star, size: iconSize),
+        // body: LayoutBuilder(
+        //   builder: (context, constraints) {
+        //     return Stack(
+        //       fit: StackFit.expand,
+        //       children: [
+        //         Material(color: Colors.yellowAccent),
+        //         Positioned(
+        //           top: 0,
+        //           child: Icon(Icons.star, size: iconSize),
+        //         ),
+        //         Positioned(
+        //           top: constraints.maxHeight - iconSize,
+        //           left: constraints.maxWidth - iconSize,
+        //           child: Icon(Icons.phone, size: iconSize),
+        //         ),
+        //       ],
+        //     );
+        //   },
+        // ),
+
+        // note: stretch 된 버튼에 제약 걸기 - Align 사용 
+        body: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Align(
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: Text('btn'),
                 ),
-                Positioned(
-                  top: constraints.maxHeight - iconSize,
-                  left: constraints.maxWidth - iconSize,
-                  child: Icon(Icons.phone, size: iconSize),
-                ),
-              ],
-            );
-          },
+              )
+            ],
+          ),
         ),
       ),
     );
