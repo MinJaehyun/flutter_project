@@ -11,7 +11,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '23',
-      // todo: pushNamed_routes 로 수정할 예정
       // home: MyPage(),
       initialRoute: '/',
       routes: {
