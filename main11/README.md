@@ -1,16 +1,6 @@
 # main11
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### result
+1. 컨테이너를 꽉 채워서 한개 만들고
+2. 하단에 2개의 버튼을 크기 동일하게 만들고
+3. 최하단에는 우측에 2개의 버튼을 정렬하시오
+![](lib/Screenshot_20230525_165550.png)
