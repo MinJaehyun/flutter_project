@@ -91,8 +91,6 @@ class _MyPageState extends State<MyPage> {
           numSet.add(number);
         }
       }
-      // note: List.generate 사용하여 중복되지 않는 숫자 생성하는 다른 방법
-      // numList = (List.generate(45, (i) => i + 1)..shuffle()).sublist(0, 6);
     });
 
     return numSet;
@@ -127,3 +125,13 @@ class _MyPageState extends State<MyPage> {
     }
   }
 }
+
+/* note:
+1. 삼항 연산자로 Text 가 없는 경우는 : Opacity(opacity: 0) 위젯 설정하여 안 보이도록 설정했다
+2. Set collection 이 비어 있는지 판별 방법은? mySet.isEmpty
+ - todo: List 도 되는지? 된다.
+3. 비어 있는지 판별 방법은 ?
+ - length == 0 은 권장하지 않는데, 정확히 isEmpty 를 사용하길 권장한다
+
+4. todo: setState() 설정하는 부분 어딘지 명확하게 이해하고 있지 않다.
+ */
