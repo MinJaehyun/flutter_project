@@ -102,12 +102,12 @@ class _LottoDataTableState extends State<LottoDataTable> {
                             // note: 로또당첨번호
                             DataCell(
                               Text(
-                                randomNumbers.length == 0 ? '로또 번호를\n생성 해주세요' : randomNumbers[0],
+                                randomNumbers.isEmpty ? '로또 번호를\n생성 해주세요' : randomNumbers[0],
                                 style: TextStyle(fontSize: 15, letterSpacing: 2.0),
                               ),
                             ),
                             // note: 보너스
-                            DataCell(Text(randomNumbers.length == 0 ? '' : randomNumbers[1])),
+                            DataCell(Text(randomNumbers.isEmpty ? '' : randomNumbers[1])),
                           ],
                         ),
                       ],
@@ -151,16 +151,19 @@ class _LottoDataTableState extends State<LottoDataTable> {
                                 SizedBox(
                                   width: 145,
                                   child: Text(
-                                    myNumbers.length == 0 ? '로또 번호를\n생성해 주세요' : myNumbers,
+                                    myNumbers.isEmpty ? '로또 번호를\n생성해 주세요' : myNumbers,
                                     softWrap: true,
                                     style: TextStyle(fontSize: 15, letterSpacing: 2.0),
                                   ),
                                 ),
                               ),
                               // 적중 개수
-                              DataCell(Text(intList.length == 0 ? '' : intList[0].toString())),
+                              // note: Text 위젯 밖에 삼항 연산자를 걸거나, Text 위젯 안에 삼항 연산자를 걸 수 있다
+                              // note: Opacity(opacity: 0) 위젯 설정하여 안 보이도록 설정하거나
+                              DataCell(intList.isNotEmpty ? Text(intList[0].toString()) : Opacity(opacity: 0)),
                               // 당첨 순위
-                              DataCell(Text(intList.length == 0 ? '' : intList[1].toString(), style: TextStyle(fontSize: 15, letterSpacing: 5.0))),
+                              // note: '' 설정하여 없도록 할 수 있다
+                              DataCell(Text(intList.isEmpty ? '' : intList[1].toString(), style: TextStyle(fontSize: 15, letterSpacing: 5.0))),
                             ],
                           ),
                         ],
