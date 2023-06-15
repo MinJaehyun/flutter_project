@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'model/model.dart';
 import 'package:http/http.dart' as http;
+import 'package:main18/3.multi_object_call_api/model/model.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -39,7 +37,7 @@ class _MyPageState extends State<MyPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          body: FutureBuilder<Bank>(
+          body: FutureBuilder<List<Bank>>(
         future: info,
         builder: (context, AsyncSnapshot snapshot) {
           // note: 1row test
@@ -53,22 +51,23 @@ class _MyPageState extends State<MyPage> {
 
           // note: info
           print('info: ${info}');
-
-          // print(snapshot.data);
+          print(snapshot.data);
 
           if (snapshot.hasData) {
             return Center(
               child: ListView.builder(
-                itemCount: 11,
+                itemCount: 5,
                 itemBuilder: (context, index) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('${snapshot.data?[index].id}'), // [{id:'xxx', ...}, {...}]
-                      // Text('${snapshot.data?.fullName}'),
-                      // Text('${snapshot.data?.account}'),
-                      // Text('${snapshot.data?.balance}'),
-                    ],
+                  return Card(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('${snapshot.data?[index].id}'), // [{id:'xxx', ...}, {...}]
+                        Text('${snapshot.data?[index].fullName}'),
+                        Text('${snapshot.data?[index].account}'),
+                        Text('${snapshot.data?[index].balance}'),
+                      ],
+                    ),
                   );
                 },
               ),
@@ -84,11 +83,11 @@ class _MyPageState extends State<MyPage> {
 
   // fixme: info 를 불러오지 못하고 있으므로 아래 살펴보기
   Future<List<Bank>> _fetchData() async {
-    // note: 10 rows
-    String url = 'https://my.api.mockaroo.com/first_test.json?key=6745d5e0';
-
     // note: 1 rows
-    // String url = 'https://my.api.mockaroo.com/one_rows_schema.json?key=6745d5e0';
+    String url = 'https://my.api.mockaroo.com/one_rows_schema.json?key=6745d5e0';
+
+    // note: 10 rows
+    // String url = 'https://my.api.mockaroo.com/first_test.json?key=6745d5e0';
 
     final response = await http.get(Uri.parse(url));
 
@@ -108,8 +107,16 @@ class _MyPageState extends State<MyPage> {
   }
 
   List<Bank> parseBanks(String responseBody) {
-    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-    return parsed.map<Bank>((json) => Bank.fromJson(json)).toList();
+    List<dynamic> body = jsonDecode(responseBody);
+    List<Bank> allBank = body.map((dynamic item) => Bank.fromJson(item)).toList();
+    print('allBank: $allBank');
+    return allBank;
+
+    // List<dynamic> body = json.decode(response.body);
+    // List<Info> allInfo =
+    // body.map((dynamic item) => Info.fromJson(item)).toList();
+
+    // return bankFromJson
   }
 }
 
