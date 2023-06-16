@@ -27,7 +27,7 @@ class _GetLocationState extends State<GetLocation> {
   void getLocation() async {
     // note: 권한 요청
     await Geolocator.requestPermission();
-    // note: 위도, 경도 가져오려면 관련 패키지 설정하기
+    // note: 위도, 경도 가져오기 위한 패키지 설정
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     print(position);
   }
@@ -45,7 +45,7 @@ class _GetLocationState extends State<GetLocation> {
           children: [
             ElevatedButton(
               onPressed: () {
-                // todo: 버튼 클릭 시, getLocation 정보를 가져온다
+                // note: 버튼을 실행하면 getLocation 정보를 가져온다
                 getLocation();
               },
               child: Text('GetLocation btn'),
