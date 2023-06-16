@@ -29,7 +29,6 @@ class _MyPageState extends State<MyPage> {
   @override
   void initState() {
     super.initState();
-    // note: initState 는 초기화 하면서 설정가져오는 것이므로 setState() 할 필요없다
     info = _fetchData();
   }
 
@@ -40,32 +39,19 @@ class _MyPageState extends State<MyPage> {
           body: FutureBuilder<List<Bank>>(
         future: info,
         builder: (context, AsyncSnapshot snapshot) {
-          // note: 1row test
-          // print('test: ${snapshot.data?.id}');
-
-          // note: 10rows test
-          // var test = snapshot.data;
-          // for(Map x in test) {
-          //   print(x);
-          // }
-
-          // note: info
-          print('info: ${info}');
-          print(snapshot.data);
-
-          if (snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.done) {
             return Center(
               child: ListView.builder(
-                itemCount: 5,
+                itemCount: snapshot.data.length,
                 itemBuilder: (context, index) {
                   return Card(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('${snapshot.data?[index].id}'), // [{id:'xxx', ...}, {...}]
-                        Text('${snapshot.data?[index].fullName}'),
-                        Text('${snapshot.data?[index].account}'),
-                        Text('${snapshot.data?[index].balance}'),
+                        Text('id: ${snapshot.data?[index].id}'), // [{id:'xxx', ...}, {...}]
+                        Text('fullName: ${snapshot.data?[index].fullName}'),
+                        Text('account: ${snapshot.data?[index].account}'),
+                        Text('balance: ${snapshot.data?[index].balance}'),
                       ],
                     ),
                   );
@@ -81,58 +67,23 @@ class _MyPageState extends State<MyPage> {
     );
   }
 
-  // fixme: info 를 불러오지 못하고 있으므로 아래 살펴보기
+  // note: 10 rows
   Future<List<Bank>> _fetchData() async {
-    // note: 1 rows
-    String url = 'https://my.api.mockaroo.com/one_rows_schema.json?key=6745d5e0';
-
-    // note: 10 rows
-    // String url = 'https://my.api.mockaroo.com/first_test.json?key=6745d5e0';
-
+    String url = 'https://my.api.mockaroo.com/first_test.json?key=6745d5e0';
     final response = await http.get(Uri.parse(url));
-
-    // note: response.body 테스트 방법
-    // print('response: ${response.body}');
-
     if (response.statusCode == 200) {
-      // note: 1 row
-      // return Bank.fromJson(jsonDecode(response.body));
-
-      // note: 10 rows
-      // return Bank.fromJson(jsonDecode(response.body));
       return parseBanks(response.body);
     } else {
       throw Exception('Failed to load bank');
     }
   }
 
+  // note: 다중 json data 를 map 돌면서 하나씩 fromJson 에 넣는 방법
+  // todo: model 에 bankFromJson(str) 넣어도 될 듯 ?
   List<Bank> parseBanks(String responseBody) {
     List<dynamic> body = jsonDecode(responseBody);
     List<Bank> allBank = body.map((dynamic item) => Bank.fromJson(item)).toList();
     print('allBank: $allBank');
     return allBank;
-
-    // List<dynamic> body = json.decode(response.body);
-    // List<Info> allInfo =
-    // body.map((dynamic item) => Info.fromJson(item)).toList();
-
-    // return bankFromJson
   }
 }
-
-/*
-Future<List<Photo>> fetchPhotos(http.Client client) async {
-  final response = await client
-      .get(Uri.parse('https://jsonplaceholder.typicode.com/photos'));
-
-  // Use the compute function to run parsePhotos in a separate isolate.
-  return parsePhotos(response.body);
-}
-
-List<Photo> parsePhotos(String responseBody) {
-  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-
-  return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
-}
-
- */
