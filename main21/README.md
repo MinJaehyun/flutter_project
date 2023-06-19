@@ -27,5 +27,20 @@
 
 
 ## 3. real_openweathermap_call_api - 실제 데이터 사용
-![](../../../Users/krism/AppData/Local/Temp/image.png)
 ### 앱 실행 즉시 현재 user 의 접속 위치와 대략적인 온도를 나타낸다
+
+## 4.weather_screen
+![](assets/images/Screenshot_20230620_004950.png)
+ 
+### 시행 착오
+1. Expanded 는 Column 내에 존재해야 하는데,
+ Expanded 는 child 을 받으므로 여러 개의 children 을 설정하지 못한다.
+ 그래서 Column 을 Expanded 로 감싸고 다시 Column 으로 감싼다.
+ 즉, Column 내에 Expanded 위젯과 Padding 위젯을 사용한다.
+2. Diverder 위젯과 미세먼지 위젯도 최초 Column 위젯 안에 위치하며 
+ Expanded 영역 밖에 위치해야 화면에 나타낼 수 있다 !
+
+### n-screen
+![img_1.png](img_1.png)
+1. SVG 사용, 날씨 소숫점1자리까지, 도씨 표현, 맑음 나타내기, 미세먼지와 초미세 먼지 수치가 아닌 좋음/보통/나쁨으로 표현하기
+2. 당일 최저온도/최고온도 표현하기 , 우측 그래프는 어떻게 표현할건지 ?
