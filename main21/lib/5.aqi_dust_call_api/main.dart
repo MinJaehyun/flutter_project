@@ -32,6 +32,7 @@ class _GetLocationState extends State<GetLocation> {
   Map<String, dynamic>? products;
   double? latitude3;
   double? longitude3;
+  Map<String, dynamic>? pollutionData;
 
   void getLocation() async {
     MyLocation myLocation = MyLocation();
@@ -39,6 +40,7 @@ class _GetLocationState extends State<GetLocation> {
     latitude3 = myLocation.latitude2;
     longitude3 = myLocation.longitude2;
 
+    // note: weather info
     String url = 'https://api.openweathermap.org/data/2.5/weather?lat=${latitude3}&lon=${longitude3}&appid=${apiKey}&units=metric';
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -48,8 +50,18 @@ class _GetLocationState extends State<GetLocation> {
       });
     }
 
+    // note: air pollution info
+    String url2 = 'http://api.openweathermap.org/data/2.5/air_pollution?lat=${latitude3}&lon=${longitude3}&appid=${apiKey}';
+    http.Response response2 = await http.get(Uri.parse(url2));
+    if (response2.statusCode == 200) {
+      var jsonData = jsonDecode(response2.body);
+      setState(() {
+        pollutionData = jsonData;
+      });
+    }
+
     Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return WeatherScreen(products: products);
+      return WeatherScreen(products: products, pollutionData: pollutionData);
     }));
   }
 
