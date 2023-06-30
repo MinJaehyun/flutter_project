@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "154268371817",
+    "project_id": "n-back-with-chat",
+    "storage_bucket": "n-back-with-chat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154268371817:android:59335303face96b0538bf8",
+        "android_client_info": {
+          "package_name": "com.example.main25"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "154268371817-b9fe3248o90phpti7lkkaddcvvjk98jf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBArCK_bwQQZPETRrquGNk5WwZcktnrFeU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "154268371817-b9fe3248o90phpti7lkkaddcvvjk98jf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
