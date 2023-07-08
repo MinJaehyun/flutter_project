@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:main28/crud_product/create_product.dart';
+import 'package:main28/crud_product/delete_product.dart';
 import 'package:main28/crud_product/update_product.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -15,6 +17,18 @@ class _CloudCRUDState extends State<CloudCRUD> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text('create'),
+        icon: Icon(Icons.save),
+        // note: product create 기능
+        onPressed: () {
+          CreateProduct createProduct = CreateProduct();
+          createProduct.showModalSheet(context);
+        },
+        // note: 모바일은 long press 해야 tooltip 나타난다
+        tooltip: '상품 저장하기',
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: AppBar(title: Text('Cloud CRUD'), centerTitle: true),
       body: StreamBuilder(
         stream: collectionReference.snapshots(),
@@ -45,7 +59,14 @@ class _CloudCRUDState extends State<CloudCRUD> {
                               updateProduct.update(context, documentSnapshot);
                               // 분리 전: _update(context, documentSnapshot);
                             }),
-                        IconButton(icon: Icon(Icons.delete), onPressed: () {}),
+                        // note: delete
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {
+                            DeleteProduct deleteProduct = DeleteProduct();
+                            deleteProduct.delete(context, documentSnapshot);
+                          },
+                        ),
                       ],
                     ),
                   ),
