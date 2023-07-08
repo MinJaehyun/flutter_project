@@ -60,8 +60,8 @@ class UpdateProduct {
   }
 
   // note: 업데이트 확인 기능
-  void _updateCheck(documentSnapshot) {
-    collectionReference.doc(documentSnapshot.id).set({
+  void _updateCheck(documentSnapshot) async {
+    await collectionReference.doc(documentSnapshot.id).set({
       'product': _productController.text,
       'price': _priceController.text,
     });
