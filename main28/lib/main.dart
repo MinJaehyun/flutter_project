@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,8 +20,17 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class CloudCRUD extends StatelessWidget {
+class CloudCRUD extends StatefulWidget {
   const CloudCRUD({super.key});
+
+  @override
+  State<CloudCRUD> createState() => _CloudCRUDState();
+}
+
+class _CloudCRUDState extends State<CloudCRUD> {
+  TextEditingController _productController = TextEditingController();
+  TextEditingController _priceController = TextEditingController();
+  CollectionReference collectionReference = FirebaseFirestore.instance.collection('products');
 
   @override
   Widget build(BuildContext context) {
@@ -29,22 +39,18 @@ class CloudCRUD extends StatelessWidget {
         title: Text('Cloud CRUD'),
         centerTitle: true,
       ),
-      // todo: StreamBuilder 의 제네릭 타입은 ?
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('products').snapshots(), // C.R.snapshot()
-        // todo: 인자 확인하기
-        builder: (context, snapshot) {
-          // print(snapshot.data!.docs);
+        stream: collectionReference.snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
-            // todo: 에러 처리 내용 맞는지 ?
-            print(snapshot.hasError);
+            return Text('${snapshot.hasError}');
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();
           }
           return ListView.builder(
-            itemCount: 1,
+            itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
-              //
+              final DocumentSnapshot documentSnapshot = snapshot.data!.docs[index];
               return Card(
                 child: ListTile(
                   title: Text('상품: ${snapshot.data!.docs[index]['product']}'),
@@ -53,8 +59,13 @@ class CloudCRUD extends StatelessWidget {
                   trailing: FittedBox(
                     fit: BoxFit.fill,
                     child: Row(children: [
-                      Icon(Icons.edit),
-                      Icon(Icons.delete),
+                      // note: update
+                      IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                            _update(context, documentSnapshot);
+                          }),
+                      IconButton(icon: Icon(Icons.delete), onPressed: () {}),
                     ]),
                   ),
                 ),
@@ -65,4 +76,110 @@ class CloudCRUD extends StatelessWidget {
       ),
     );
   }
+
+  // note: update
+  void _update(context, documentSnapshot) {
+    _productController.text = documentSnapshot['product'];
+    _priceController.text = documentSnapshot['price'].toString();
+
+    showMaterialModalBottomSheet(
+      context: context,
+      builder: (context) => SingleChildScrollView(
+        controller: ModalScrollController.of(context),
+        child: Container(
+          // note: ★☆★ 텍스트필드를 감싸고 있는 컨테이너에 bottom sheet 를 키보드 눌렀을 때 가리지 않게 설정하는 방법 ★☆★
+          padding: EdgeInsets.only(left: 20, top: 20, right: 20, bottom: MediaQuery.of(context).viewInsets.bottom),
+          // _productController.text = collectionReference.doc(documentSnapshot.id)['product'], // 서버값 넣기 documentSnapshot.id 의 product
+          color: Colors.white70,
+          child: Column(
+            // note: 입력창 크기만큼 공간을 차지하게 설정
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                  controller: _productController,
+                  decoration: InputDecoration(
+                    labelText: 'product',
+                    hintText: '변경할 상품명을 입력해 주세요',
+                  ),
+              ),
+              TextField(
+                  controller: _priceController,
+                  decoration: InputDecoration(
+                    labelText: 'price',
+                    hintText: '변경할 가격을 입력해 주세요',
+                  )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(onPressed: () {
+                    _updateCheck(documentSnapshot);
+                    Navigator.of(context).pop();
+                  }, child: Text('Update')),
+                  SizedBox(width: 15),
+                  ElevatedButton(
+                      onPressed: () {
+                        _updateCancelShowDialog();
+                      },
+                      child: Text('Cancel')),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // note: 업데이트 확인 기능
+  void _updateCheck(documentSnapshot) {
+    collectionReference.doc(documentSnapshot.id).set({
+      'product': _productController.text,
+      'price': _priceController.text,
+    });
+  }
+
+  // note: 업데이트 cancel 기능
+  void _updateCancelShowDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        // note: Container 삭제하면 알림창 뒤에 화면 보여준다
+        return Container(
+          color: Colors.grey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Dialog(
+                child: Column(
+                  children: [
+                    Card(
+                      child: ListTile(
+                        leading: Icon(Icons.notifications),
+                        title: Text('업데이트를 취소 하시겠습니까?'),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton(onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        }, child: Text('Yes')),
+                        SizedBox(width: 15),
+                        ElevatedButton(onPressed: () {
+                          Navigator.of(context).pop();
+                        }, child: Text('No')),
+                        SizedBox(width: 5),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
 }
